@@ -17,9 +17,7 @@
       "fallbackToCacheTimeout": 0
     },
     "jsEngine": "hermes",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "webby.mobile.skeleton",
@@ -69,7 +67,8 @@
     ],
     "experiments": {
       "tsconfigPaths": true
-    }
+    },
+    "userInterfaceStyle": "automatic"
   },
   "ignite": {
     "version": "9.0.3"
