@@ -26,10 +26,11 @@ import { useInitialRootStore } from "./models"
 import { AppNavigator, useNavigationPersistence } from "./navigators"
 import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
 import * as storage from "./utils/storage"
-import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
-import { ViewStyle } from "react-native"
+import { useColorScheme, ViewStyle } from "react-native"
+import { TamaguiProvider, Theme } from "tamagui"
+import tamaguiConfig from "./theme/tamagui.config"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -58,7 +59,13 @@ function App(props: AppProps) {
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
 
-  const [areFontsLoaded] = useFonts(customFontsToLoad)
+  const colorScheme = useColorScheme()
+
+  const [areFontsLoaded] = useFonts({
+    Inter: require("@tamagui/font-inter/otf/Inter-Regular.otf"),
+    InterLight: require("@tamagui/font-inter/otf/Inter-Light.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+  })
 
   const { rehydrated } = useInitialRootStore(() => {
     // This runs after the root store has been initialized and rehydrated.
@@ -85,17 +92,21 @@ function App(props: AppProps) {
 
   // otherwise, we're ready to render the app
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <ErrorBoundary catchErrors={Config.catchErrors}>
-        <GestureHandlerRootView style={$container}>
-          <AppNavigator
-            linking={linking}
-            initialState={initialNavigationState}
-            onStateChange={onNavigationStateChange}
-          />
-        </GestureHandlerRootView>
-      </ErrorBoundary>
-    </SafeAreaProvider>
+    <TamaguiProvider config={tamaguiConfig}>
+      <Theme name={colorScheme}>
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+          <ErrorBoundary catchErrors={Config.catchErrors}>
+            <GestureHandlerRootView style={$container}>
+              <AppNavigator
+                linking={linking}
+                initialState={initialNavigationState}
+                onStateChange={onNavigationStateChange}
+              />
+            </GestureHandlerRootView>
+          </ErrorBoundary>
+        </SafeAreaProvider>
+      </Theme>
+    </TamaguiProvider>
   )
 }
 
